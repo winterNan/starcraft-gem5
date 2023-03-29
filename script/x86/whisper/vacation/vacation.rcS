@@ -1,0 +1,13 @@
+#!/bin/sh
+# This is required
+mount proc /proc -t proc
+
+# Add localhost to the loop
+# Required by memcached host
+
+/sbin/ifconfig lo 127.0.0.1
+/sbin/route add -net 127.0.0.0 netmask 255.0.0.0 lo
+
+cd /benchmarks/whisper/install/bin/
+
+./vacation -c4 -r4000 -t2000 -n1 -q80 -u99 -e1

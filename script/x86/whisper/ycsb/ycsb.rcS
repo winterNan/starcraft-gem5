@@ -1,0 +1,20 @@
+#!/bin/sh
+
+mount proc /proc -t proc
+# Uncomment this if benchmarks loaded onto a separate disk.
+# mount -t ext2 /dev/hdb1 /benchmarks
+
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib64
+export PATH=$PATH:/usr/local/bin
+
+# Switch on m5 pseudoinstructions called by instrumentation functions (SimRoiBegin, SimRoiEnd) 
+# in order to call m5_checkpoint, m5_exit, etc. (see benchmarks/libs/gem5/m5ops_wrapper.c)
+export M5_SIMULATOR=1 
+
+# File to run the nstore.tpcc benchmark
+
+cd /benchmarks/whisper/install/bin/
+./nstore -x40000 -k100000 -w -p0.8 -e4 -n0 --ycsb
+printf "\n Done :D"
+/sbin/m5 exit
+/sbin/m5 exit

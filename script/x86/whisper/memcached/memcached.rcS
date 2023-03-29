@@ -1,0 +1,23 @@
+#!/bin/sh
+# This is required
+mount proc /proc -t proc
+
+# Add localhost to the loop
+# Required by memcached host
+
+/sbin/ifconfig lo 127.0.0.1
+/sbin/route add -net 127.0.0.0 netmask 255.0.0.0 lo
+
+cd /benchmarks/whisper/install/bin/
+
+./run_memcache.sh
+
+sleep 2
+
+printf '\n starting memslap client'
+
+./run_memslap.sh
+
+printf "\n Done :D"
+/sbin/m5 exit
+/sbin/m5 exit

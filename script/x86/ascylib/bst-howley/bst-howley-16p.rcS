@@ -1,0 +1,32 @@
+#!/bin/sh
+#/sbin/m5 checkpoint
+#echo "Made checkpoint!"
+#/sbin/m5 exit
+#/sbin/m5 exit
+
+mount proc /proc -t proc
+# Uncomment this if benchmarks loaded onto a separate disk.
+# mount -t ext2 /dev/hdb1 /benchmarks
+
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib64
+export PATH=$PATH:/usr/local/bin
+
+echo "Checking path settings: "
+echo $LD_LIBRARY_PATH
+echo $PATH
+
+# Switch on m5 pseudoinstructions called by instrumentation functions (SimRoiBegin, SimRoiEnd)
+# in order to call m5_checkpoint, m5_exit, etc. (see benchmarks/libs/gem5/m5ops_wrapper.c)
+export M5_SIMULATOR=1
+
+pwd
+cd /benchmarks/ascylib/install/bin.ckpts/16p
+echo "Begin benchmark!"
+/sbin/m5 dumpstats
+/sbin/m5 resetstats
+
+./lf-bst-howley -n 16 -i 1024 #4048576
+echo ":D"
+/sbin/m5 dumpstats
+/sbin/m5 exit
+/sbin/m5 exit

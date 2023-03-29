@@ -1,0 +1,21 @@
+#!/bin/sh
+
+mount proc /proc -t proc
+# Uncomment this if benchmarks loaded onto a separate disk.
+# mount -t ext2 /dev/hdb1 /benchmarks
+
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib64
+export PATH=$PATH:/usr/local/bin
+
+# Switch on m5 pseudoinstructions called by instrumentation functions (SimRoiBegin, SimRoiEnd) 
+# in order to call m5_checkpoint, m5_exit, etc. (see benchmarks/libs/gem5/m5ops_wrapper.c)
+export M5_SIMULATOR=1
+
+# File to run the blackscholes benchmark
+
+cd /benchmarks/parsec/install/bin.ckpts/
+./blackscholes 64 /benchmarks/parsec/install/inputs/blackscholes/in_64K.txt /benchmarks/parsec/install/inputs/blackscholes/prices.txt
+# ./blackscholes 8 /benchmarks/parsec/install/inputs/blackscholes/in_4.txt /benchmarks/parsec/install/inputs/blackscholes/prices.txt
+echo "Done :D"
+/sbin/m5 exit
+/sbin/m5 exit

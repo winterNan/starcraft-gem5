@@ -1,0 +1,27 @@
+#!/bin/sh
+
+mount proc /proc -t proc
+# Uncomment this if benchmarks loaded onto a separate disk.
+# mount -t ext2 /dev/hdb1 /benchmarks
+
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib64
+export PATH=$PATH:/usr/local/bin
+
+# Switch on m5 pseudoinstructions called by instrumentation functions (SimRoiBegin, SimRoiEnd) 
+# in order to call m5_checkpoint, m5_exit, etc. (see benchmarks/libs/gem5/m5ops_wrapper.c)
+export M5_SIMULATOR=1 
+
+export PMEM_NO_MOVNT=1
+export PMEM_MMAP_HINT=0x0000100000000000
+export PMEM_IS_PMEM_FORCE=1
+
+dir=/dev/shm/ctree-testfile
+bin="./pmembench map_insert"
+
+cd /benchmarks/whisper/install/bin/
+
+$bin -f $dir -d 128 -n 102400 -t 4 -r 2 -T ctree   
+
+printf "\n Done :D"
+/sbin/m5 exit
+/sbin/m5 exit

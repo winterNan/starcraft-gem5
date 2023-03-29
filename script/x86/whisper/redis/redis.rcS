@@ -1,0 +1,22 @@
+#!/bin/sh
+# This is required
+mount proc /proc -t proc
+
+# Add localhost to the loop
+
+/sbin/ifconfig lo 127.0.0.1
+/sbin/route add -net 127.0.0.0 netmask 255.0.0.0 lo
+
+cd /benchmarks/whisper/install/bin/
+
+./run-redis-server.sh
+
+sleep 2
+
+printf '\n starting redis client'
+
+./run-redis-cli.sh
+
+printf "\n Done :D"
+/sbin/m5 exit
+/sbin/m5 exit
